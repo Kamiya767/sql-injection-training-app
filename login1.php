@@ -48,10 +48,11 @@ ini_set('display_errors', 1);
 //echo md5("pa55w0rd");
 
 if (!empty($_REQUEST['uid'])) {
-$username = ($_REQUEST['uid']);
-$pass = $_REQUEST['password'];
-
-$q = "SELECT * FROM users where username='".$username."' AND password = '".md5($pass)."'" ;
+$stmt = $con->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+$hashed_password = md5($pass);
+$stmt->bind_param("ss", $username, $hashed_password);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if (isset($_GET['debug']))
 {
